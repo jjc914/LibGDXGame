@@ -22,12 +22,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        mainClass.getBatch().begin(); //open batch
+        mainClass.getBatch().begin();
 
-        mainClass.getBatch().draw(testTexture, 0, 0);  //draw your texture at x coordinate 0 and y coordinate 0
-        System.out.println("big noob");
+        mainClass.getBatch().draw(testTexture, 0, 0);
 
-        mainClass.getBatch().end(); //close the batch
+        mainClass.getBatch().end();
     }
 
     @Override
