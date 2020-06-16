@@ -25,7 +25,7 @@ public class GameScreen implements Screen {
         mainClass.getBatch().begin(); //open batch
 
         mainClass.getBatch().draw(testTexture, 0, 0);  //draw your texture at x coordinate 0 and y coordinate 0
-        System.out.println("render loop");
+        System.out.println("big noob");
 
         mainClass.getBatch().end(); //close the batch
     }
