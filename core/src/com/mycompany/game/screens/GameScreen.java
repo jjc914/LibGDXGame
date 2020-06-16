@@ -6,10 +6,13 @@ import com.mycompany.game.MainClass;
 
 public class GameScreen implements Screen {
     MainClass mainClass;
-    Texture texture;
+    Texture testTexture;
 
-    public GameScreen(MainClass mainClass) {
-        this.mainClass = mainClass;
+    public GameScreen(MainClass main) {
+        this.mainClass = main;
+        testTexture = new Texture("test.jpg");
+
+        System.out.println("started screen");
     }
 
     @Override
@@ -21,7 +24,8 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         mainClass.getBatch().begin(); //open batch
 
-        mainClass.getBatch().draw(texture, 0, 0);  //draw your texture at x coordinate 0 and y coordinate 0
+        mainClass.getBatch().draw(testTexture, 0, 0);  //draw your texture at x coordinate 0 and y coordinate 0
+        System.out.println("render loop");
 
         mainClass.getBatch().end(); //close the batch
     }
