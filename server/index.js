@@ -3,12 +3,14 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 server.listen(8080, function() {
-    console.log("ServServer running");
+    console.log("Server running");
 })
 
-io.on('connection', function() {
-    console.log("player connected");
+io.on('connection', function(socket) {
+    console.log("Player with id " + socket.id + " connected");
+    socket.emit('socketID', { id: socket.id })
+    socket.broadcast.emit("newPlayer", { id: socket.id })
     socket.on('disconnect', function() {
-        console.log("plaplayer disconnected");
+        console.log("Player with id " + socket.id + " disconnected");
     })
 })
