@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -23,12 +22,10 @@ import io.socket.emitter.Emitter;
 
 public class GameScreen implements Screen {
     MainClass mainClass;
-    Texture testTexture;
 
     private Viewport viewport;
     private OrthographicCamera camera;
 
-    private TmxMapLoader mapLoader; //helps load the map
     private TiledMap map; //the loaded map object
     private OrthogonalTiledMapRenderer renderer; //renders the map
     private Socket socket;
@@ -37,8 +34,9 @@ public class GameScreen implements Screen {
     {
         mainClass = game;
 
-        mapLoader = new TmxMapLoader(); //create an instance of built-in map loader object
-        map = mapLoader.load("tilemaps/lvl1.tmx"); //using map loader object, load the tiled map that you made
+        //helps load the map
+        TmxMapLoader mapLoader = new TmxMapLoader();
+        map = mapLoader.load("tilemaps/lvl1.tmx");
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(Constants.WIDTH, Constants.HEIGHT, camera);
@@ -53,7 +51,7 @@ public class GameScreen implements Screen {
     public void update(float delta)
     {
         camera.update();
-        renderer.setView(camera); //sets the view from our camera so it would render only what our camera can see.
+        renderer.setView(camera);
     }
 
     @Override
@@ -104,7 +102,7 @@ public class GameScreen implements Screen {
             socket.connect();
         }
         catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.toString());
         }
     }
 
