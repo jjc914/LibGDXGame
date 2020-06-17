@@ -8,4 +8,7 @@ server.listen(8080, function() {
 
 io.on('connection', function() {
     console.log("player connected");
+    socket.on('disconnect', function() {
+        console.log("plaplayer disconnected");
+    })
 })
