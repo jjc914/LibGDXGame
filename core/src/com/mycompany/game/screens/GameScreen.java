@@ -2,17 +2,27 @@ package com.mycompany.game.screens;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.mycompany.game.MainClass;
+
+
 
 public class GameScreen implements Screen {
     MainClass mainClass;
     Texture testTexture;
 
-    public GameScreen(MainClass main) {
-        this.mainClass = main;
-        testTexture = new Texture("test.jpg");
+    private TmxMapLoader mapLoader; //helps load the map
+    private TiledMap map; //the loaded map object
+    private OrthogonalTiledMapRenderer renderer; //renders the map
 
-        System.out.println("started screen");
+    public GameScreen(MainClass game)
+    {
+        //existing constructor code
+        mapLoader = new TmxMapLoader(); //create an instance of built-in map loader object
+        map = mapLoader.load("tilemaps/lvl1.tmx"); //using map loader object, load the tiled map that you made
+        renderer = new OrthogonalTiledMapRenderer(map); //render the map.
     }
 
     @Override
@@ -22,11 +32,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        mainClass.getBatch().begin();
-
-        mainClass.getBatch().draw(testTexture, 0, 0);
-
-        mainClass.getBatch().end();
+        renderer.render();
     }
 
     @Override
@@ -51,6 +57,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
     }
 }
