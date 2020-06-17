@@ -39,11 +39,12 @@ public class GameScreen implements Screen {
 
         mapLoader = new TmxMapLoader(); //create an instance of built-in map loader object
         map = mapLoader.load("tilemaps/lvl1.tmx"); //using map loader object, load the tiled map that you made
-        renderer = new OrthogonalTiledMapRenderer(map); //render the map.
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(Constants.WIDTH, Constants.HEIGHT, camera);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+
+        renderer = new OrthogonalTiledMapRenderer(map); //render the map.
 
         connectSocket();
         configSocketEvents();
@@ -72,7 +73,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        viewport.update(width, height);
     }
 
     @Override
