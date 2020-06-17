@@ -6,6 +6,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 // TODO: https://stackoverflow.com/questions/49377519/how-do-i-make-socket-io-listen-in-the-internet-with-a-static-ip
+// TODO: https://www.sisik.eu/blog/android/other/embedding-node-into-android-app
 server.listen(PORT, IP_ADDRESS, function() {
     console.log("Server running");
 })
