@@ -67,7 +67,7 @@ public class GameScreen implements Screen {
         createWorld();
         createCollisionListener();
 
-        opponentTexture = new Texture("badlogic.jpg");
+//        opponentTexture = new Texture("badlogic.jpg");
         opponents = new HashMap<String, Opponent>();
 
         connectSocket();
