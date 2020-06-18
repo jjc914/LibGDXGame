@@ -10,4 +10,9 @@ public class Constants {
     public static final int BASE = 3;
     public static final int BASE_COL = 4;
     public static final int FG = 5;;
+
+    public static final int RUN_ANIM_START = 0;
+    public static final int RUN_ANIM_END = 2;
+    public static final String SPRITE_SHEET = "/Users/IanChoong/StudioProjects/LibGDXGame/android/assets/tilemaps/tilesets/spriteAnimation.atlas";
+    public static final String ANIM_STRING = "animation";
 }

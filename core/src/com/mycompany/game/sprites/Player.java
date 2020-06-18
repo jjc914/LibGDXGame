@@ -2,13 +2,22 @@ package com.mycompany.game.sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mycompany.game.Constants;
+import com.mycompany.game.screens.GameScreen;
+
+import java.lang.reflect.Array;
+
+import javax.swing.plaf.nimbus.State;
 
 public class Player extends Sprite {
     private World world;
@@ -22,9 +31,21 @@ public class Player extends Sprite {
     private boolean isTouchingRight;
     private boolean isTouchingLeft;
 
-    public Player(World world) {
+    private GameScreen screen;
+
+    //texture regions
+    private TextureRegion playerIdleTexture;
+
+    //states
+    public enum State {STANDING};
+    public State currentState;
+    private boolean runningToRight;
+
+
+    public Player(World world, GameScreen screen) {
         this.world = world;
         definePlayerBox2d();
+        super(screen.getAtlas().findRegion(Constants.PLAYER_STRING);
     }
 
     public void definePlayerBox2d() {
@@ -111,15 +132,18 @@ public class Player extends Sprite {
         {
             Vector2 force = new Vector2(moveForce, playerBody.getLinearVelocity().y);
             playerBody.setLinearVelocity(force);
+            state = State.RUNNING;
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
             Vector2 force = new Vector2(-moveForce, playerBody.getLinearVelocity().y);
             playerBody.setLinearVelocity(force);
+            state = State.RUNNING;
         }
         else
         {
             playerBody.setLinearVelocity(0f, playerBody.getLinearVelocity().y);
+            state = State.STANDING;
         }
 
         // jumping
@@ -127,6 +151,7 @@ public class Player extends Sprite {
         {
             Vector2 force = new Vector2(0f, jumpForce);
             playerBody.setLinearVelocity(force);
+            state = State.JUMPING;
         }
 
         if (playerBody.getLinearVelocity().y < 0) {
@@ -152,9 +177,35 @@ public class Player extends Sprite {
         this.isGrounded = isGrounded;
     }
 
-    public void setRightCollision(boolean isTouchingRight) { this.isTouchingRight = isTouchingRight; }
+    public void setRightCollision(boolean isTouchingRight)
+    {
+        this.isTouchingRight = isTouchingRight;
+    }
 
-    public void setLeftCollision(boolean isTouchingLeft) {
+    public void setLeftCollision(boolean isTouchingLeft)
+    {
         this.isTouchingLeft = isTouchingLeft;
     }
+
+    public void getAnimation(State state)
+    {
+        if (state == State.RUNNING)
+        {
+            for(int i = Constants.RUN_ANIM_START; i < Constants.RUN_ANIM_END; i++)
+            {
+
+                region = runAnimation.getKeyFrame(stateTimer, true);
+            }
+        }
+        else if (state == State.JUMPING)
+        {
+
+        }
+        else if (state == State.STANDING)
+        {
+
+        }
+    }
+
+
 }
