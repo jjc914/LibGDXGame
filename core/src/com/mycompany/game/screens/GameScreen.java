@@ -22,8 +22,6 @@ import com.mycompany.game.MainClass;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.awt.event.WindowEvent;
-
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -116,7 +114,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://10.0.255:8000");
+            socket = IO.socket("http://10.0.15.255:8000");
             socket.connect();
         }
         catch (Exception e) {
