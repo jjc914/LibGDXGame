@@ -15,6 +15,9 @@ public class Player extends Sprite {
 
     public Body playerBody;
     public Body groundedBody;
+    public Body leftBody;
+    public Body rightBody;
+
 
     private boolean isGrounded;
 
@@ -41,6 +44,8 @@ public class Player extends Sprite {
         playerBody.setUserData(playerBody);
 
         defineGroundedBox2d();
+        rightCollisionBox2d();
+        leftCollisionBox2d();
     }
 
     public void defineGroundedBox2d() {
@@ -58,6 +63,40 @@ public class Player extends Sprite {
 
         groundedBody.createFixture(fixtureDef);
         groundedBody.setUserData(groundedBody);
+    }
+
+    public void rightCollisionBox2d() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        rightBody = world.createBody(bodyDef);
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(1, 6.6f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = polygonShape;
+        fixtureDef.density = 1f;
+        fixtureDef.isSensor = true;
+
+        rightBody.createFixture(fixtureDef);
+        rightBody.setUserData(rightBody);
+    }
+
+    public void leftCollisionBox2d() {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        leftBody = world.createBody(bodyDef);
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.setAsBox(1, -6.6f);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = polygonShape;
+        fixtureDef.density = 1f;
+        fixtureDef.isSensor = true;
+
+        leftBody.createFixture(fixtureDef);
+        leftBody.setUserData(leftBody);
     }
 
     public void handleInput(float delta)  {
@@ -96,6 +135,9 @@ public class Player extends Sprite {
         }
 
         groundedBody.setTransform(playerBody.getPosition().x, playerBody.getPosition().y - 7.5f, 0f);
+        leftBody.setTransform(playerBody.getPosition().x - 7.5f, playerBody.getPosition().y, 0f);
+        rightBody.setTransform(playerBody.getPosition().x + 7.5f, playerBody.getPosition().y, 0f);
+
     }
 
     //TODO: fix bug where if you walk into wall, you stop y velocity movement
