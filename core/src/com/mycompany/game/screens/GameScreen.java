@@ -1,24 +1,24 @@
 package com.mycompany.game.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -63,6 +63,7 @@ public class GameScreen implements Screen {
         viewport = new FitViewport(Constants.WIDTH, Constants.HEIGHT, camera);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
+        // set gravity
         world = new World(new Vector2(0,-200), true);
         player = new Player(world);
 
@@ -83,9 +84,54 @@ public class GameScreen implements Screen {
         }
 
         renderer = new OrthogonalTiledMapRenderer(map);
+
+        createCollisionListener();
+
         connectSocket();
         configSocketEvents();
+    }
 
+    private void createCollisionListener() {
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Body bodyA = contact.getFixtureA().getBody();
+                Body bodyB = contact.getFixtureB().getBody();
+
+                if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
+                {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    {
+                        player.setGrounded(true);
+                    }
+                }
+//                Gdx.app.log("beginContact", "between " + fixtureA.getUserData().toString() + " and " + fixtureB.getUserData().toString());
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                Body bodyA = contact.getFixtureA().getBody();
+                Body bodyB = contact.getFixtureB().getBody();
+
+                if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
+                {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    {
+                        player.setGrounded(false);
+                    }
+                }
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
     }
 
     @Override
@@ -96,7 +142,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
-        handleInput(delta);
+        player.handleInput(delta);
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -140,39 +186,39 @@ public class GameScreen implements Screen {
         renderer.setView(camera);
     }
 
-    private void handleInput(float delta) {
-        float moveForce = 200;
-
-        // left-right movement
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        {
-
-            Vector2 force = new Vector2(moveForce, player.getBox2Body().getLinearVelocity().y); //1. create force
-//            player.getBox2Body().applyLinearImpulse(force, player.getBox2Body().getWorldCenter(), true); //apply force
-            player.getBox2Body().setLinearVelocity(force);
-//            player.getBox2Body().setTransform(new Vector2(player.getBox2Body().getPosition().x + 1f, player.getBox2Body().getPosition().y), 0f);
-        }
-        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-
-            Vector2 force = new Vector2(-moveForce, player.getBox2Body().getLinearVelocity().y); //1. create force
-//            player.getBox2Body().applyLinearImpulse(force, player.getBox2Body().getWorldCenter(), true); //apply force
-            player.getBox2Body().setLinearVelocity(force);
-//            player.getBox2Body().setTransform(new Vector2(player.getBox2Body().getPosition().x + 1f, player.getBox2Body().getPosition().y), 0f);
-        }
-        else
-        {
-            player.getBox2Body().setLinearVelocity(0f, player.getBox2Body().getLinearVelocity().y);
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
-        {
-            System.out.println(player.box2Body.getLinearVelocity().y);
-            Vector2 force = new Vector2(0f, 100f);
-//            player.getBox2Body().applyForce(force, player.getBox2Body().getWorldCenter(), true); //apply force
-            player.getBox2Body().setLinearVelocity(force); //apply force
-        }
-    }
+//    private void handleInput(float delta) {
+//        float moveForce = 200;
+//
+//        // left-right movement
+//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+//        {
+//
+//            Vector2 force = new Vector2(moveForce, player.getBox2Body().getLinearVelocity().y); //1. create force
+////            player.getBox2Body().applyLinearImpulse(force, player.getBox2Body().getWorldCenter(), true); //apply force
+//            player.getBox2Body().setLinearVelocity(force);
+////            player.getBox2Body().setTransform(new Vector2(player.getBox2Body().getPosition().x + 1f, player.getBox2Body().getPosition().y), 0f);
+//        }
+//        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+//        {
+//
+//            Vector2 force = new Vector2(-moveForce, player.getBox2Body().getLinearVelocity().y); //1. create force
+////            player.getBox2Body().applyLinearImpulse(force, player.getBox2Body().getWorldCenter(), true); //apply force
+//            player.getBox2Body().setLinearVelocity(force);
+////            player.getBox2Body().setTransform(new Vector2(player.getBox2Body().getPosition().x + 1f, player.getBox2Body().getPosition().y), 0f);
+//        }
+//        else
+//        {
+//            player.getBox2Body().setLinearVelocity(0f, player.getBox2Body().getLinearVelocity().y);
+//        }
+//
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
+//        {
+//            System.out.println(player.box2Body.getLinearVelocity().y);
+//            Vector2 force = new Vector2(0f, 100f);
+////            player.getBox2Body().applyForce(force, player.getBox2Body().getWorldCenter(), true); //apply force
+//            player.getBox2Body().setLinearVelocity(force); //apply force
+//        }
+//    }
 
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
