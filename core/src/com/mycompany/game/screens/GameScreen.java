@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mycompany.game.Constants;
 import com.mycompany.game.MainClass;
+import com.mycompany.game.sprites.Opponent;
 import com.mycompany.game.sprites.Player;
 
 import org.json.JSONException;
@@ -41,11 +43,13 @@ public class GameScreen implements Screen {
     MainClass mainClass;
 
     private World world;
-    //world
     private Player player;
 
     private Viewport viewport;
     private OrthographicCamera camera;
+
+    private Texture playerTexture;
+    private Texture opponentTexture;
 
     private TmxMapLoader mapLoader; //helps load the map
     private TiledMap map; //the loaded map object
@@ -54,7 +58,7 @@ public class GameScreen implements Screen {
 
     private Socket socket;
 
-    HashMap<String, Player> players;
+    HashMap<String, Opponent> opponents;
 
     public GameScreen(MainClass game) {
         mainClass = game;
@@ -63,7 +67,8 @@ public class GameScreen implements Screen {
         createWorld();
         createCollisionListener();
 
-        players = new HashMap<String, Player>();
+        opponentTexture = new Texture("badlogic.jpg");
+        opponents = new HashMap<String, Opponent>();
 
         connectSocket();
         configSocketEvents();
@@ -158,7 +163,7 @@ public class GameScreen implements Screen {
             player.handleInput(delta);
 //            player.draw(mainClass.getBatch());
         }
-//        for (HashMap.Entry<String, Player> entry : friendlyPlayers.entrySet()) {
+//        for (HashMap.Entry<String, Player> entry : friendlyopponents.entrySet()) {
 //            entry.getValue().draw(mainClass.getBatch());
 //        }
 
@@ -239,7 +244,7 @@ public class GameScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     System.out.println("[SocketIO] " + "New player connected with ID" + id);
-//                    players.put(id, new Player())
+                    opponents.put(id, new Opponent(opponentTexture, world));
                 }
                 catch(JSONException e) {
                     System.out.println("[SocketIO] " + "Error getting new player ID");
