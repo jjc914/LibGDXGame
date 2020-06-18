@@ -126,7 +126,7 @@ public class GameScreen implements Screen {
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
-                        player.rightCollision(true);
+                        player.setRightCollision(true);
                     }
                 }
 
@@ -135,11 +135,9 @@ public class GameScreen implements Screen {
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
-                        player.leftCollision(true);
+                        player.setLeftCollision(true);
                     }
                 }
-
-//                Gdx.app.log("beginContact", "between " + fixtureA.getUserData().toString() + " and " + fixtureB.getUserData().toString());
             }
 
             @Override
@@ -160,7 +158,7 @@ public class GameScreen implements Screen {
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
-                        player.rightCollision(false);
+                        player.setRightCollision(false);
                     }
                 }
 
@@ -169,7 +167,7 @@ public class GameScreen implements Screen {
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
-                        player.leftCollision(false);
+                        player.setLeftCollision(false);
                     }
                 }
             }

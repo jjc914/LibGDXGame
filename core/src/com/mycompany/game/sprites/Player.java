@@ -18,13 +18,11 @@ public class Player extends Sprite {
     public Body leftBody;
     public Body rightBody;
 
-
     private boolean isGrounded;
-    private boolean isRight;
-    private boolean isLeft;
+    private boolean isTouchingRight;
+    private boolean isTouchingLeft;
 
-    public Player(World world)
-    {
+    public Player(World world) {
         this.world = world;
         definePlayerBox2d();
     }
@@ -136,23 +134,27 @@ public class Player extends Sprite {
             playerBody.applyLinearImpulse(force, playerBody.getWorldCenter(), true);
         }
 
+        if (isTouchingLeft) {
+            playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y);
+        }
+
+        if (isTouchingRight) {
+            playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y);
+        }
+
         groundedBody.setTransform(playerBody.getPosition().x, playerBody.getPosition().y - 7.5f, 0f);
-        leftBody.setTransform(playerBody.getPosition().x - 7.5f, playerBody.getPosition().y, 0f);
         rightBody.setTransform(playerBody.getPosition().x + 7.5f, playerBody.getPosition().y, 0f);
+        leftBody.setTransform(playerBody.getPosition().x - 7.5f, playerBody.getPosition().y, 0f);
 
     }
-
-    //TODO: fix bug where if you walk into wall, you stop y velocity movement
 
     public void setGrounded(boolean isGrounded) {
         this.isGrounded = isGrounded;
     }
 
-    public void rightCollision(boolean isRight) {
-        this.isRight = isRight;
-    }
+    public void setRightCollision(boolean isTouchingRight) { this.isTouchingRight = isTouchingRight; }
 
-    public void leftCollision(boolean isLeft) {
-        this.isLeft = isLeft;
+    public void setLeftCollision(boolean isTouchingLeft) {
+        this.isTouchingLeft = isTouchingLeft;
     }
 }
