@@ -42,10 +42,16 @@ public class Player extends Sprite {
     private boolean runningToRight;
 
 
-    public Player(World world, GameScreen screen) {
+    public Player(World world, GameScreen screen)
+    {
+        super(screen.getAtlas().findRegion(Constants.PLAYER_STRING));
         this.world = world;
         definePlayerBox2d();
-        super(screen.getAtlas().findRegion(Constants.PLAYER_STRING);
+        currentState = State.STANDING;
+        runningToRight = true;
+        playerIdleTexture = new TextureRegion(screen.getAtlas().findRegion(Constants.PLAYER_STRING), 0, 0, 16, 16);
+        setBounds(0, 0, 16, 16);
+        setRegion(playerIdleTexture);
     }
 
     public void definePlayerBox2d() {
@@ -132,18 +138,15 @@ public class Player extends Sprite {
         {
             Vector2 force = new Vector2(moveForce, playerBody.getLinearVelocity().y);
             playerBody.setLinearVelocity(force);
-            state = State.RUNNING;
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
             Vector2 force = new Vector2(-moveForce, playerBody.getLinearVelocity().y);
             playerBody.setLinearVelocity(force);
-            state = State.RUNNING;
         }
         else
         {
             playerBody.setLinearVelocity(0f, playerBody.getLinearVelocity().y);
-            state = State.STANDING;
         }
 
         // jumping
@@ -151,7 +154,6 @@ public class Player extends Sprite {
         {
             Vector2 force = new Vector2(0f, jumpForce);
             playerBody.setLinearVelocity(force);
-            state = State.JUMPING;
         }
 
         if (playerBody.getLinearVelocity().y < 0) {
@@ -189,22 +191,64 @@ public class Player extends Sprite {
 
     public void getAnimation(State state)
     {
-        if (state == State.RUNNING)
-        {
-            for(int i = Constants.RUN_ANIM_START; i < Constants.RUN_ANIM_END; i++)
-            {
+//        if (state == State.RUNNING)
+//        {
+//            for(int i = Constants.RUN_ANIM_START; i < Constants.RUN_ANIM_END; i++)
+//            {
+//
+//                region = runAnimation.getKeyFrame(stateTimer, true);
+//            }
+//        }
+//        else if (state == State.JUMPING)
+//        {
+//
+//        }
+//        else if (state == State.STANDING)
+//        {
+//
+//        }
+    }
 
-                region = runAnimation.getKeyFrame(stateTimer, true);
-            }
-        }
-        else if (state == State.JUMPING)
-        {
+    public void update(float deltaTime)
+    {
+        //set to position of bottom left corner of box2dbody
+        setPosition(playerBody.getPosition().x - getWidth() / 2, playerBody.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(deltaTime));
+    }
 
-        }
-        else if (state == State.STANDING)
+    private TextureRegion getFrame(float deltaT)
+    {
+        currentState = getState();
+        TextureRegion region;
+        switch(currentState)
         {
-
+            //no breaks for next 2 cases because the following code applies to all 3 cases
+            case STANDING:
+                //no break needed here because STANDING and 'default' will do the same thing.
+            default:
+                region = playerIdleTexture;
+                break;
         }
+
+        //region.isFlipX() = true if texture is flipped i.e. Player running to left
+        //if Player is standing facing right, flip them and run to left
+        if((playerBody.getLinearVelocity().x < 0 || !runningToRight) && !region.isFlipX())
+        {
+            region.flip(true, false);
+            runningToRight = false;
+        }
+        //if Player is standing facing left, flip them and run to right
+        else if((playerBody.getLinearVelocity().x > 0 || runningToRight) && region.isFlipX())
+        {
+            region.flip(true, false);
+            runningToRight = true;
+        }
+        return region;
+    }
+
+    public State getState()
+    {
+        return State.STANDING;
     }
 
 

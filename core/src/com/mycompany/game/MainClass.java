@@ -7,7 +7,7 @@ import com.mycompany.game.screens.GameScreen;
 
 public class MainClass extends Game {
 	Screen currentScreen;
-	SpriteBatch batch;
+	private SpriteBatch batch;
 
 	public SpriteBatch getBatch() {
 		return batch;

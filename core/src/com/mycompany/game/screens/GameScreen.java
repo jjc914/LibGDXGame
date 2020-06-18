@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -41,6 +42,8 @@ import io.socket.emitter.Emitter;
 
 public class GameScreen implements Screen {
     MainClass mainClass;
+    GameScreen gameScreen;
+    private TextureAtlas atlas;
 
     private World world;
     private Player player;
@@ -62,6 +65,9 @@ public class GameScreen implements Screen {
 
     public GameScreen(MainClass game) {
         mainClass = game;
+        gameScreen = this;
+
+        atlas = new TextureAtlas(Constants.SPRITE_SHEET);
 
         createCamera();
         createWorld();
@@ -193,8 +199,12 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         update(delta);
 
+
         if (player != null) {
+            mainClass.getBatch().begin();
             player.handleInput(delta);
+            player.draw(mainClass.getBatch());
+            mainClass.getBatch().end();
 //            player.draw(mainClass.getBatch());
         }
 //        for (HashMap.Entry<String, Player> entry : friendlyopponents.entrySet()) {
@@ -238,7 +248,15 @@ public class GameScreen implements Screen {
     public void update(float delta) {
         world.step(1/120f,6,2);
         camera.update();
+        if (player != null)
+        {
+            player.update(delta);
+        }
         renderer.setView(camera);
+    }
+
+    public TextureAtlas getAtlas(){
+        return atlas;
     }
 
     public void connectSocket() {
@@ -269,7 +287,7 @@ public class GameScreen implements Screen {
                     System.out.println("[SocketIO] " + "Error getting ID");
                 }
                 // When connected
-                player = new Player(world);
+                player = new Player(world, gameScreen);
             }
         }).on("newPlayer", new Emitter.Listener() {
             @Override
