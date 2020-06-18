@@ -30,6 +30,8 @@ import com.mycompany.game.sprites.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -42,30 +44,43 @@ public class GameScreen implements Screen {
     //world
     private Player player;
 
-    private Box2DDebugRenderer box2DDebugRenderer = new Box2DDebugRenderer();
-
     private Viewport viewport;
     private OrthographicCamera camera;
 
     private TmxMapLoader mapLoader; //helps load the map
     private TiledMap map; //the loaded map object
     private OrthogonalTiledMapRenderer renderer; //renders the map
+    Box2DDebugRenderer box2DDebugRenderer;
+
     private Socket socket;
 
-    public GameScreen(MainClass game)
-    {
+    HashMap<String, Player> friendlyPlayers;
+
+    public GameScreen(MainClass game) {
         mainClass = game;
-        //map loader
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("tilemaps/lvl1.tmx");
-        //camera loader
+
+        createCamera();
+        createWorld();
+        createCollisionListener();
+
+        friendlyPlayers = new HashMap<String, Player>();
+
+        connectSocket();
+        configSocketEvents();
+    }
+
+    private void createCamera() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(Constants.WIDTH, Constants.HEIGHT, camera);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+    }
 
-        // set gravity
+    private void createWorld() {
+        box2DDebugRenderer = new Box2DDebugRenderer();
+        mapLoader = new TmxMapLoader();
+
+        map = mapLoader.load("tilemaps/lvl1.tmx");
         world = new World(new Vector2(0,-500), true);
-        player = new Player(world);
 
         BodyDef bodyDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -80,15 +95,9 @@ public class GameScreen implements Screen {
             shape.setAsBox(rectangle.getWidth() / 2, rectangle.getHeight() / 2);
             fixtureDef.shape = shape;
             body.createFixture(fixtureDef);
-
         }
 
         renderer = new OrthogonalTiledMapRenderer(map);
-
-        createCollisionListener();
-
-        connectSocket();
-        configSocketEvents();
     }
 
     private void createCollisionListener() {
@@ -144,7 +153,14 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
-        player.handleInput(delta);
+
+        if (player != null) {
+            player.handleInput(delta);
+//            player.draw(mainClass.getBatch());
+        }
+//        for (HashMap.Entry<String, Player> entry : friendlyPlayers.entrySet()) {
+//            entry.getValue().draw(mainClass.getBatch());
+//        }
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -180,8 +196,7 @@ public class GameScreen implements Screen {
         renderer.dispose();
     }
 
-    public void update(float delta)
-    {
+    public void update(float delta) {
         world.step(1/120f,6,2);
         camera.update();
         renderer.setView(camera);
@@ -212,8 +227,10 @@ public class GameScreen implements Screen {
                     String id = data.getString("id");
                     System.out.println("[SocketIO] " + "Connected with ID " + id);
                 } catch (JSONException e) {
-                    System.out.println("[SocketIO] " + "Error connecting");
+                    System.out.println("[SocketIO] " + "Error getting ID");
                 }
+                // When connected
+                player = new Player(world);
             }
         }).on("newPlayer", new Emitter.Listener() {
             @Override

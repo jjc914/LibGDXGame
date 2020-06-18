@@ -98,7 +98,7 @@ public class Player extends Sprite {
         groundedBody.setTransform(playerBody.getPosition().x, playerBody.getPosition().y - 7.5f, 0f);
     }
 
-    //TODO: stop movement when detect collision on left/right
+    //TODO: fix bug where if you walk into wall, you stop y velocity movement
 
     public void setGrounded(boolean isGrounded) {
         this.isGrounded = isGrounded;
