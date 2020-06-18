@@ -8,6 +8,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mycompany.game.Constants;
@@ -25,6 +32,9 @@ public class GameScreen implements Screen {
     MainClass mainClass;
     Texture testTexture;
 
+    private World world;
+    private Box2DDebugRenderer box2DDebugRenderer;
+
     private Viewport viewport;
     private OrthographicCamera camera;
 
@@ -36,16 +46,22 @@ public class GameScreen implements Screen {
     public GameScreen(MainClass game)
     {
         mainClass = game;
-
-        mapLoader = new TmxMapLoader(); //create an instance of built-in map loader object
-        map = mapLoader.load("tilemaps/lvl1.tmx"); //using map loader object, load the tiled map that you made
-
+        //map loader
+        mapLoader = new TmxMapLoader();
+        map = mapLoader.load("tilemaps/lvl1.tmx");
+        //camera loader
         camera = new OrthographicCamera();
         viewport = new FitViewport(Constants.WIDTH, Constants.HEIGHT, camera);
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
+        //world
 
-        renderer = new OrthogonalTiledMapRenderer(map); //render the map.
-
+        world = new World(new Vector2(0,0), true);
+        BodyDef bodyDef = new BodyDef();
+        PolygonShape shape = new PolygonShape();
+        FixtureDef fixtureDef = new FixtureDef();
+        Body body;
+        
+        renderer = new OrthogonalTiledMapRenderer(map);
         connectSocket();
         configSocketEvents();
     }
@@ -64,7 +80,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
-
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         mainClass.getBatch().setProjectionMatrix(camera.combined);
@@ -100,7 +115,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://localhost:8000");
+            socket = IO.socket("https://ecacc6d63ec1.ngrok.io");
             socket.connect();
         }
         catch (Exception e) {
