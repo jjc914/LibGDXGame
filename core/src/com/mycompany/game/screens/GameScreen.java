@@ -116,6 +116,24 @@ public class GameScreen implements Screen {
                     }
                 }
 
+                //check right wall
+                if (bodyA.getUserData() == player.rightBody || bodyB.getUserData() == player.rightBody)
+                {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    {
+                        player.rightCollision(true);
+                    }
+                }
+
+                //check left wall
+                if (bodyA.getUserData() == player.leftBody || bodyB.getUserData() == player.leftBody)
+                {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    {
+                        player.leftCollision(true);
+                    }
+                }
+
 //                Gdx.app.log("beginContact", "between " + fixtureA.getUserData().toString() + " and " + fixtureB.getUserData().toString());
             }
 
@@ -129,6 +147,24 @@ public class GameScreen implements Screen {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
                         player.setGrounded(false);
+                    }
+                }
+
+                //check right wall
+                if (bodyA.getUserData() == player.rightBody || bodyB.getUserData() == player.rightBody)
+                {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    {
+                        player.rightCollision(false);
+                    }
+                }
+
+                //check left wall
+                if (bodyA.getUserData() == player.leftBody || bodyB.getUserData() == player.leftBody)
+                {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    {
+                        player.leftCollision(false);
                     }
                 }
             }

@@ -20,6 +20,8 @@ public class Player extends Sprite {
 
 
     private boolean isGrounded;
+    private boolean isRight;
+    private boolean isLeft;
 
     public Player(World world)
     {
@@ -144,5 +146,13 @@ public class Player extends Sprite {
 
     public void setGrounded(boolean isGrounded) {
         this.isGrounded = isGrounded;
+    }
+
+    public void rightCollision(boolean isRight) {
+        this.isRight = isRight;
+    }
+
+    public void leftCollision(boolean isLeft) {
+        this.isLeft = isLeft;
     }
 }
