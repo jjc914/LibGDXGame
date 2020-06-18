@@ -71,7 +71,7 @@ public class Player extends Sprite {
         rightBody = world.createBody(bodyDef);
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(1, 6.6f);
+        polygonShape.setAsBox(1f, 6.5f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
@@ -88,7 +88,7 @@ public class Player extends Sprite {
         leftBody = world.createBody(bodyDef);
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.setAsBox(1, -6.6f);
+        polygonShape.setAsBox(1, 6.6f);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = polygonShape;
