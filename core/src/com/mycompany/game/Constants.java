@@ -13,7 +13,7 @@ public class Constants {
 
     public static final int RUN_ANIM_START = 0;
     public static final int RUN_ANIM_END = 2;
-    public static final String SPRITE_SHEET = "/Users/IanChoong/StudioProjects/LibGDXGame/android/assets/tilemaps/tilesets/originaltiles/SpriteSheet.atlas";
+    public static final String SPRITE_SHEET = "Tilemaps/tilesets/originaltiles/SpriteSheet.atlas";
     public static final String ANIM_STRING = "spriteAnimation";
     public static final String PLAYER_STRING = "spriteAnimation";
 }

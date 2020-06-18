@@ -12,14 +12,16 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.mycompany.game.Constants;
+import com.mycompany.game.MainClass;
 import com.mycompany.game.screens.GameScreen;
-
-import java.lang.reflect.Array;
 
 import javax.swing.plaf.nimbus.State;
 
 public class Player extends Sprite {
+    private MainClass mainClass;
+    private GameScreen gameScreen;
     private World world;
 
     public Body playerBody;
@@ -31,27 +33,16 @@ public class Player extends Sprite {
     private boolean isTouchingRight;
     private boolean isTouchingLeft;
 
-    private GameScreen screen;
+    public TextureRegion currentFrame;
+    private float elapsed_time = 0f;
 
-    //texture regions
-    private TextureRegion playerIdleTexture;
-
-    //states
-    public enum State {STANDING};
-    public State currentState;
-    private boolean runningToRight;
-
-
-    public Player(World world, GameScreen screen)
+    public Player(World world, MainClass mainClass, GameScreen gameScreen)
     {
-        super(screen.getAtlas().findRegion(Constants.PLAYER_STRING));
         this.world = world;
+        this.mainClass = mainClass;
+        this.gameScreen = gameScreen;
+
         definePlayerBox2d();
-        currentState = State.STANDING;
-        runningToRight = true;
-        playerIdleTexture = new TextureRegion(screen.getAtlas().findRegion(Constants.PLAYER_STRING), 0, 0, 16, 16);
-        setBounds(0, 0, 16, 16);
-        setRegion(playerIdleTexture);
     }
 
     public void definePlayerBox2d() {
@@ -175,6 +166,13 @@ public class Player extends Sprite {
 
     }
 
+    public TextureRegion handleAnimations(float delta) {
+        elapsed_time += Gdx.graphics.getDeltaTime();
+        currentFrame = (TextureRegion) gameScreen.runningAnimation.getKeyFrame(elapsed_time);
+
+        return currentFrame;
+    }
+
     public void setGrounded(boolean isGrounded) {
         this.isGrounded = isGrounded;
     }
@@ -211,45 +209,6 @@ public class Player extends Sprite {
 
     public void update(float deltaTime)
     {
-        //set to position of bottom left corner of box2dbody
-        setPosition(playerBody.getPosition().x - getWidth() / 2, playerBody.getPosition().y - getHeight() / 2);
-        setRegion(getFrame(deltaTime));
+
     }
-
-    private TextureRegion getFrame(float deltaT)
-    {
-        currentState = getState();
-        TextureRegion region;
-        switch(currentState)
-        {
-            //no breaks for next 2 cases because the following code applies to all 3 cases
-            case STANDING:
-                //no break needed here because STANDING and 'default' will do the same thing.
-            default:
-                region = playerIdleTexture;
-                break;
-        }
-
-        //region.isFlipX() = true if texture is flipped i.e. Player running to left
-        //if Player is standing facing right, flip them and run to left
-        if((playerBody.getLinearVelocity().x < 0 || !runningToRight) && !region.isFlipX())
-        {
-            region.flip(true, false);
-            runningToRight = false;
-        }
-        //if Player is standing facing left, flip them and run to right
-        else if((playerBody.getLinearVelocity().x > 0 || runningToRight) && region.isFlipX())
-        {
-            region.flip(true, false);
-            runningToRight = true;
-        }
-        return region;
-    }
-
-    public State getState()
-    {
-        return State.STANDING;
-    }
-
-
 }

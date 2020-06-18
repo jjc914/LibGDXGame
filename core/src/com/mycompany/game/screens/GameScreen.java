@@ -5,7 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mycompany.game.Constants;
@@ -41,8 +44,11 @@ import io.socket.emitter.Emitter;
 
 
 public class GameScreen implements Screen {
-    MainClass mainClass;
-    GameScreen gameScreen;
+    private MainClass mainClass;
+    private GameScreen gameScreen;
+
+    public Animation runningAnimation;
+
     private TextureAtlas atlas;
 
     private World world;
@@ -51,13 +57,10 @@ public class GameScreen implements Screen {
     private Viewport viewport;
     private OrthographicCamera camera;
 
-    private Texture playerTexture;
-    private Texture opponentTexture;
-
     private TmxMapLoader mapLoader; //helps load the map
     private TiledMap map; //the loaded map object
     private OrthogonalTiledMapRenderer renderer; //renders the map
-    Box2DDebugRenderer box2DDebugRenderer;
+    private Box2DDebugRenderer box2DDebugRenderer;
 
     private Socket socket;
 
@@ -73,7 +76,6 @@ public class GameScreen implements Screen {
         createWorld();
         createCollisionListener();
 
-//        opponentTexture = new Texture("badlogic.jpg");
         opponents = new HashMap<String, Opponent>();
 
         connectSocket();
@@ -199,13 +201,11 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         update(delta);
 
-
         if (player != null) {
             mainClass.getBatch().begin();
             player.handleInput(delta);
-            player.draw(mainClass.getBatch());
+            mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
             mainClass.getBatch().end();
-//            player.draw(mainClass.getBatch());
         }
 //        for (HashMap.Entry<String, Player> entry : friendlyopponents.entrySet()) {
 //            entry.getValue().draw(mainClass.getBatch());
@@ -246,7 +246,7 @@ public class GameScreen implements Screen {
     }
 
     public void update(float delta) {
-        world.step(1/120f,6,2);
+        world.step(1f/120f,6,2);
         camera.update();
         if (player != null)
         {
@@ -255,8 +255,13 @@ public class GameScreen implements Screen {
         renderer.setView(camera);
     }
 
-    public TextureAtlas getAtlas(){
-        return atlas;
+    public void createPlayer() {
+        player = new Player(world, mainClass, this);
+        System.out.println("worl");
+//        TextureAtlas atlas = new TextureAtlas(Constants.SPRITE_SHEET);
+
+        Array<TextureAtlas.AtlasRegion> runningFrames = atlas.findRegions("spriteAnimation");
+        runningAnimation = new Animation(1f/120f, runningFrames, Animation.PlayMode.LOOP);
     }
 
     public void connectSocket() {
@@ -287,7 +292,7 @@ public class GameScreen implements Screen {
                     System.out.println("[SocketIO] " + "Error getting ID");
                 }
                 // When connected
-                player = new Player(world, gameScreen);
+                createPlayer();
             }
         }).on("newPlayer", new Emitter.Listener() {
             @Override
@@ -296,7 +301,7 @@ public class GameScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     System.out.println("[SocketIO] " + "New player connected with ID" + id);
-                    opponents.put(id, new Opponent(opponentTexture, world));
+//                    opponents.put(id, new Opponent(opponentTexture, world));
                 }
                 catch(JSONException e) {
                     System.out.println("[SocketIO] " + "Error getting new player ID");
