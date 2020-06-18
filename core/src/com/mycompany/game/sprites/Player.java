@@ -2,7 +2,6 @@ package com.mycompany.game.sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -11,14 +10,13 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-public class Player extends Sprite implements InputProcessor {
+public class Player extends Sprite {
     private World world;
 
     public Body playerBody;
     public Body groundedBody;
 
     private boolean isGrounded;
-    private boolean jumpReleased;
 
     public Player(World world)
     {
@@ -64,12 +62,10 @@ public class Player extends Sprite implements InputProcessor {
 
     public void handleInput(float delta)  {
         float moveForce = 200f;
-        float jumpForce = 90f;
+        float jumpForce = 130;
 
         // lock rotation
         playerBody.setFixedRotation(true);
-
-
 
         // left-right movement
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
@@ -94,57 +90,17 @@ public class Player extends Sprite implements InputProcessor {
             playerBody.setLinearVelocity(force);
         }
 
-
-
-        if (!Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            Vector2 force = new Vector2(0f, -1);
-            playerBody.applyForce(force, playerBody.getWorldCenter(), true);
+        if (playerBody.getLinearVelocity().y < 0) {
+            Vector2 force = new Vector2(0f, -200);
+            playerBody.applyLinearImpulse(force, playerBody.getWorldCenter(), true);
         }
 
         groundedBody.setTransform(playerBody.getPosition().x, playerBody.getPosition().y - 7.5f, 0f);
     }
 
+    //TODO: stop movement when detect collision on left/right
+
     public void setGrounded(boolean isGrounded) {
         this.isGrounded = isGrounded;
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
     }
 }

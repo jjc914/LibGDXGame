@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
         camera.position.set(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
 
         // set gravity
-        world = new World(new Vector2(0,-200), true);
+        world = new World(new Vector2(0,-500), true);
         player = new Player(world);
 
         BodyDef bodyDef = new BodyDef();
@@ -98,6 +98,7 @@ public class GameScreen implements Screen {
                 Body bodyA = contact.getFixtureA().getBody();
                 Body bodyB = contact.getFixtureB().getBody();
 
+                // Check if player is grounded
                 if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
@@ -105,6 +106,7 @@ public class GameScreen implements Screen {
                         player.setGrounded(true);
                     }
                 }
+
 //                Gdx.app.log("beginContact", "between " + fixtureA.getUserData().toString() + " and " + fixtureB.getUserData().toString());
             }
 
@@ -181,49 +183,14 @@ public class GameScreen implements Screen {
     public void update(float delta)
     {
         world.step(1/120f,6,2);
-//        camera.position.x = player.getBox2Body().getPosition().x;
         camera.update();
         renderer.setView(camera);
     }
 
-//    private void handleInput(float delta) {
-//        float moveForce = 200;
-//
-//        // left-right movement
-//        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-//        {
-//
-//            Vector2 force = new Vector2(moveForce, player.getBox2Body().getLinearVelocity().y); //1. create force
-////            player.getBox2Body().applyLinearImpulse(force, player.getBox2Body().getWorldCenter(), true); //apply force
-//            player.getBox2Body().setLinearVelocity(force);
-////            player.getBox2Body().setTransform(new Vector2(player.getBox2Body().getPosition().x + 1f, player.getBox2Body().getPosition().y), 0f);
-//        }
-//        else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-//        {
-//
-//            Vector2 force = new Vector2(-moveForce, player.getBox2Body().getLinearVelocity().y); //1. create force
-////            player.getBox2Body().applyLinearImpulse(force, player.getBox2Body().getWorldCenter(), true); //apply force
-//            player.getBox2Body().setLinearVelocity(force);
-////            player.getBox2Body().setTransform(new Vector2(player.getBox2Body().getPosition().x + 1f, player.getBox2Body().getPosition().y), 0f);
-//        }
-//        else
-//        {
-//            player.getBox2Body().setLinearVelocity(0f, player.getBox2Body().getLinearVelocity().y);
-//        }
-//
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.UP))
-//        {
-//            System.out.println(player.box2Body.getLinearVelocity().y);
-//            Vector2 force = new Vector2(0f, 100f);
-////            player.getBox2Body().applyForce(force, player.getBox2Body().getWorldCenter(), true); //apply force
-//            player.getBox2Body().setLinearVelocity(force); //apply force
-//        }
-//    }
-
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://10.0.17.255:8000");
+            socket = IO.socket("http://143.89.89.202:8000");
             socket.connect();
         }
         catch (Exception e) {
