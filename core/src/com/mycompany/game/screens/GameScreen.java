@@ -54,7 +54,7 @@ public class GameScreen implements Screen {
 
     private Socket socket;
 
-    HashMap<String, Player> friendlyPlayers;
+    HashMap<String, Player> players;
 
     public GameScreen(MainClass game) {
         mainClass = game;
@@ -63,7 +63,7 @@ public class GameScreen implements Screen {
         createWorld();
         createCollisionListener();
 
-        friendlyPlayers = new HashMap<String, Player>();
+        players = new HashMap<String, Player>();
 
         connectSocket();
         configSocketEvents();
@@ -239,25 +239,23 @@ public class GameScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     System.out.println("[SocketIO] " + "New player connected with ID" + id);
+//                    players.put(id, new Player())
                 }
                 catch(JSONException e) {
                     System.out.println("[SocketIO] " + "Error getting new player ID");
                 }
             }
-        }).on("updatePlayer", new Emitter.Listener() {
+        }).on("playerDisconnected", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    String updateData = data.getString("updateData");
-                    System.out.println("[SocketIO] " + "Caught update data " + updateData);
-                }
-                catch(JSONException e) {
-                    {
-                        System.out.println("[SocketIO] " + "Error getting new player ID");
-                    }
+                    String id = data.getString("id");
+                    System.out.println("[SocketIO] " + "New player connected with ID" + id);
+                } catch (JSONException e) {
+                    System.out.println("[SocketIO] " + "Error getting new player ID");
                 }
             }
-        }) ;
+        });
     }
 }
