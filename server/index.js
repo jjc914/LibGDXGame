@@ -1,8 +1,13 @@
+var IP_ADDRESS = "192.168.1.6";
+var PORT = 8000;
+
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(8080, function() {
+// TODO: https://stackoverflow.com/questions/49377519/how-do-i-make-socket-io-listen-in-the-internet-with-a-static-ip
+// TODO: https://www.sisik.eu/blog/android/other/embedding-node-into-android-app
+server.listen(PORT, IP_ADDRESS, function() {
     console.log("Server running");
 })
 
