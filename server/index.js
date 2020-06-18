@@ -1,4 +1,4 @@
-var IP_ADDRESS = "143.89.89.202";
+var IP_ADDRESS = "localhost";
 var PORT = 8000;
 
 var app = require('express')();
