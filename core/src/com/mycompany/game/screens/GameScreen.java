@@ -114,7 +114,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://localhost:8000");
+            socket = IO.socket("http://10.0.15.255:8000");
             socket.connect();
         }
         catch (Exception e) {
