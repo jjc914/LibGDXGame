@@ -146,10 +146,25 @@ public class GameScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     System.out.println("[SocketIO] " + "New player connected with ID" + id);
-                }catch(JSONException e){
+                }
+                catch(JSONException e) {
                     System.out.println("[SocketIO] " + "Error getting new player ID");
                 }
             }
-        });
+        }).on("updatePlayer", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String updateData = data.getString("updateData");
+                    System.out.println("[SocketIO] " + "Caught update data " + updateData);
+                }
+                catch(JSONException e) {
+                    {
+                        System.out.println("[SocketIO] " + "Error getting new player ID");
+                    }
+                }
+            }
+        }) ;
     }
 }
