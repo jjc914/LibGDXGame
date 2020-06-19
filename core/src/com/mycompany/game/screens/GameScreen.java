@@ -202,7 +202,7 @@ public class GameScreen implements Screen {
     }
 
     public void createPlayer() {
-        player = new Player(world, mainClass, this);
+        player = new Player(playerTexture, world, mainClass, this);
         System.out.println("worl");
 //        TextureAtlas atlas = new TextureAtlas(Constants.SPRITE_SHEET);
 
@@ -280,7 +280,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://localhost:8000");
+            socket = IO.socket("http://10.0.18.61:8000");
             socket.connect();
         }
         catch (Exception e) {
