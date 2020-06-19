@@ -30,6 +30,8 @@ public class Player extends Sprite {
     public Body leftBody;
     public Body rightBody;
 
+    private Animation<TextureRegion> runningAnimation;
+
     public boolean isGrounded;
     public boolean isTouchingRight;
     public boolean isTouchingLeft;
@@ -152,23 +154,23 @@ public class Player extends Sprite {
 
         if (isTouchingLeft) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-            setGrounded(true);
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            {
-                playerBody.setLinearVelocity(0,-4);
-            }
+//            setGrounded(true);
+//            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
+//            {
+//                playerBody.setLinearVelocity(0,-4);
+//            }
         }
 
 
 
         if (isTouchingRight) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-            isGrounded = true;
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT ))
-            {
-                playerBody.setLinearVelocity(0,-4);
-                setGrounded(true);
-            }
+//            isGrounded = true;
+//            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT ))
+//            {
+//                playerBody.setLinearVelocity(0,-4);
+//                setGrounded(true);
+//            }
         }
 
 
@@ -190,12 +192,5 @@ public class Player extends Sprite {
     public void setLeftCollision(boolean isTouchingLeft)
     {
         this.isTouchingLeft = isTouchingLeft;
-    }
-
-    public void update(float deltaTime)
-    {
-        //set to position of bottom left corner of box2dbody
-        setPosition(playerBody.getPosition().x - getWidth() / 2, playerBody.getPosition().y - getHeight() / 2);
-//        System.out.println(isGrounded);
     }
 }

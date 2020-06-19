@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -46,28 +47,21 @@ import io.socket.emitter.Emitter;
 
 public class GameScreen implements Screen {
     private MainClass mainClass;
-    private GameScreen gameScreen;
-
-    public Animation runningAnimation;
-
-    private TextureAtlas atlas;
 
     private World world;
     private Player player;
-    private Opponent opponent;
 
     private Viewport viewport;
     private OrthographicCamera camera;
 
     private TmxMapLoader mapLoader; //helps load the map
     private TiledMap map; //the loaded map object
-    private OrthogonalTiledMapRenderer renderer; //renders the map
+    private OrthogonalTiledMapRenderer mapRenderer; //renders the map
     private Box2DDebugRenderer box2DDebugRenderer;
 
 
     private Texture opponentTexture;
 
-    private final float UPDATE_TIME = 1f/60f;
     float timer;
     private Socket socket;
 
@@ -75,16 +69,12 @@ public class GameScreen implements Screen {
 
     public GameScreen(MainClass game) {
         mainClass = game;
-        gameScreen = this;
-
-
-
-        opponentTexture = new Texture(Constants.TEMP_SPRITE);
 
         createCamera();
         createWorld();
         createCollisionListener();
 
+        opponentTexture = new Texture(Constants.TEMP_SPRITE);
         opponents = new HashMap<String, Opponent>();
 
         connectSocket();
@@ -119,7 +109,7 @@ public class GameScreen implements Screen {
             body.createFixture(fixtureDef);
         }
 
-        renderer = new OrthogonalTiledMapRenderer(map);
+        mapRenderer = new OrthogonalTiledMapRenderer(map);
     }
 
     private void createCollisionListener() {
@@ -212,27 +202,27 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        update(delta);
+        world.step(delta,6,2);
+
         updateServer(delta);
 
+        // clear screen
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        renderer.render();
+        camera.update();
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+
         mainClass.getBatch().begin();
 
-        if (player != null) {
-            player.handleInput(delta);
-            player.draw(mainClass.getBatch());
-        }
-        for (HashMap.Entry<String, Opponent> entry : opponents.entrySet()) {
-            entry.getValue().draw(mainClass.getBatch());
-        }
+        handlePlayer(delta);
+        handleOpponents(delta);
 
         mainClass.getBatch().end();
         mainClass.getBatch().setProjectionMatrix(camera.combined);
 
-//        box2DDebugRenderer.render(world, camera.combined);
+        box2DDebugRenderer.render(world, camera.combined);
     }
 
     @Override
@@ -258,26 +248,25 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         map.dispose();
-        renderer.dispose();
+        mapRenderer.dispose();
+        opponentTexture.dispose();
     }
 
-    public void update(float delta) {
-        world.step(1f/120f,6,2);
-        camera.update();
-        if (player != null)
-        {
-            player.update(delta);
+    public void handlePlayer(float delta) {
+        if (player != null) {
+            player.handleInput(delta);
         }
-        renderer.setView(camera);
     }
 
-    public TextureAtlas getAtlas() {
-        return atlas;
+    public void handleOpponents(float delta) {
+        for (HashMap.Entry<String, Opponent> entry : opponents.entrySet()) {
+            entry.getValue().draw(mainClass.getBatch());
+        }
     }
 
     public void updateServer(float delta) {
         timer += delta;
-        if (timer >= UPDATE_TIME && player != null) {
+        if (timer >= Constants.UPDATE_TIME && player != null) {
             JSONObject data = new JSONObject();
             try {
                 data.put("x", player.getX());
