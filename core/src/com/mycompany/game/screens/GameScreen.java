@@ -291,7 +291,7 @@ public class GameScreen implements Screen {
             try {
                 data.put("x", player.getX());
                 data.put("y", player.getY());
-                socket.emit("playerMoved", data);
+                socket.emit("playerMove", data);
                 System.out.println("noob");
             }
             catch (JSONException e) {
@@ -303,7 +303,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://10.0.18.61:8000");
+            socket = IO.socket("http://10.0.17.255:8000");
             socket.connect();
         }
         catch (Exception e) {
