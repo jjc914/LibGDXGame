@@ -53,6 +53,7 @@ public class GameScreen implements Screen {
 
     private World world;
     private Player player;
+    private Opponent opponent;
 
     private Viewport viewport;
     private OrthographicCamera camera;
@@ -223,11 +224,9 @@ public class GameScreen implements Screen {
 
             mainClass.getBatch().end();
         }
-//        for (HashMap.Entry<String, Player> entry : friendlyopponents.entrySet()) {
-//            entry.getValue().g
-
-//            (mainClass.getBatch());
-//        }
+        for (HashMap.Entry<String, Opponent> entry : opponents.entrySet()) {
+            entry.getValue().draw(mainClass.getBatch());
+        }
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -280,7 +279,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://localhost:8000");
+            socket = IO.socket("http://10.0.18.61:8000");
             socket.connect();
         }
         catch (Exception e) {
@@ -314,7 +313,7 @@ public class GameScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     System.out.println("[SocketIO] " + "New player connected with ID" + id);
-//                    opponents.put(id, new Opponent(opponentTexture, world));
+                    opponents.put(id, new Opponent(opponentTexture, world));
                 }
                 catch(JSONException e) {
                     System.out.println("[SocketIO] " + "Error getting new player ID");
