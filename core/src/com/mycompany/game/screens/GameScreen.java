@@ -135,9 +135,10 @@ public class GameScreen implements Screen {
                 // Check if player is grounded
                 if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
                 {
-                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody) && player.isTouchingLeft && player.isTouchingRight);
                     {
                         player.setGrounded(true);
+                        System.out.println(player.isGrounded);
                     }
                 }
 
@@ -167,9 +168,10 @@ public class GameScreen implements Screen {
 
                 if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
                 {
-                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody) && !player.isTouchingLeft && !player.isTouchingRight);
                     {
                         player.setGrounded(false);
+                        System.out.println(player.isGrounded);
                     }
                 }
 

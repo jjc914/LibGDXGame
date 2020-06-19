@@ -30,9 +30,9 @@ public class Player extends Sprite {
     public Body leftBody;
     public Body rightBody;
 
-    private boolean isGrounded;
-    private boolean isTouchingRight;
-    private boolean isTouchingLeft;
+    public boolean isGrounded;
+    public boolean isTouchingRight;
+    public boolean isTouchingLeft;
 
     public TextureRegion currentFrame;
     private float elapsed_time = 0f;
@@ -153,7 +153,7 @@ public class Player extends Sprite {
         // jumping
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && isGrounded)
         {
-            Vector2 force = new Vector2(0f, jumpForce);
+            Vector2 force = new Vector2(jumpForce/2, jumpForce);
             playerBody.setLinearVelocity(force);
         }
 
@@ -163,11 +163,22 @@ public class Player extends Sprite {
         }
 
         if (isTouchingLeft) {
-            playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y);
+            playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            {
+                Vector2 force = new Vector2(jumpForce/2f, jumpForce);
+                playerBody.setLinearVelocity(force);
+            }
         }
 
+
         if (isTouchingRight) {
-            playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y);
+            playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            {
+                Vector2 force = new Vector2(-(jumpForce/2f), jumpForce);
+                playerBody.setLinearVelocity(force);
+            }
         }
 
         groundedBody.setTransform(playerBody.getPosition().x, playerBody.getPosition().y - 7.5f, 0f);
