@@ -11,10 +11,9 @@ public class Constants {
     public static final int BASE_COL = 4;
     public static final int FG = 5;;
 
-    public static final int RUN_ANIM_START = 0;
-    public static final int RUN_ANIM_END = 2;
-    public static final String SPRITE_SHEET = "Tilemaps/tilesets/sprites.atlas";
-    public static final String ANIM_STRING = "spriteAnimation";
-    public static final String PLAYER_STRING = "SpriteSheet";
+    // player animation
+    public static final int FRAME_COLS = 4;
+    public static final int FRAME_ROWS = 4;
+
     public static final String TEMP_SPRITE ="Tilemaps/tilesets/temp_sprite.png";
 }

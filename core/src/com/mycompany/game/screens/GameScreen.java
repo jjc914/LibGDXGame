@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer; //renders the map
     private Box2DDebugRenderer box2DDebugRenderer;
 
-    private Texture playerTexture;
+
     private Texture opponentTexture;
 
     private final float UPDATE_TIME = 1f/60f;
@@ -77,10 +77,7 @@ public class GameScreen implements Screen {
         mainClass = game;
         gameScreen = this;
 
-        atlas = new TextureAtlas(Constants.SPRITE_SHEET);
 
-        Array<TextureAtlas.AtlasRegion> runningFrames = atlas.findRegions("SpriteSheet");
-        runningAnimation = new Animation(1f/120f, runningFrames, Animation.PlayMode.LOOP);
 
         opponentTexture = new Texture(Constants.TEMP_SPRITE);
 
@@ -132,31 +129,24 @@ public class GameScreen implements Screen {
                 Body bodyA = contact.getFixtureA().getBody();
                 Body bodyB = contact.getFixtureB().getBody();
 
-                // Check if player is grounded
-                if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
-                {
-                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody) && player.isTouchingLeft && player.isTouchingRight);
-                    {
+                // check if player grounded
+                if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody) {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody)) {
                         player.setGrounded(true);
-//                        System.out.println(player.isGrounded);
                     }
                 }
 
-                //check right wall
-                if (bodyA.getUserData() == player.rightBody || bodyB.getUserData() == player.rightBody)
-                {
-                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
-                    {
+                // check right wall
+                if (bodyA.getUserData() == player.rightBody || bodyB.getUserData() == player.rightBody) {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody)) {
                         player.setRightCollision(true);
                         player.setGrounded(true);
                     }
                 }
 
-                //check left wall
-                if (bodyA.getUserData() == player.leftBody || bodyB.getUserData() == player.leftBody)
-                {
-                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
-                    {
+                // check left wall
+                if (bodyA.getUserData() == player.leftBody || bodyB.getUserData() == player.leftBody) {
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody)) {
                         player.setLeftCollision(true);
                         player.setGrounded(true);
                     }
@@ -168,16 +158,17 @@ public class GameScreen implements Screen {
                 Body bodyA = contact.getFixtureA().getBody();
                 Body bodyB = contact.getFixtureB().getBody();
 
+                // check if grounded
                 if (bodyA.getUserData() == player.groundedBody || bodyB.getUserData() == player.groundedBody)
                 {
-                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody) && !player.isTouchingLeft && !player.isTouchingRight);
+                    if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody));
                     {
                         player.setGrounded(false);
 //                        System.out.println(player.isGrounded);
                     }
                 }
 
-                //check right wall
+                // check right wall
                 if (bodyA.getUserData() == player.rightBody || bodyB.getUserData() == player.rightBody)
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
@@ -187,7 +178,7 @@ public class GameScreen implements Screen {
                     }
                 }
 
-                //check left wall
+                // check left wall
                 if (bodyA.getUserData() == player.leftBody || bodyB.getUserData() == player.leftBody)
                 {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
@@ -211,10 +202,7 @@ public class GameScreen implements Screen {
     }
 
     public void createPlayer() {
-        player = new Player(playerTexture, world, mainClass, this);
-        System.out.println("worl");
-//        TextureAtlas atlas = new TextureAtlas(Constants.SPRITE_SHEET);
-
+        player = new Player(world, mainClass, this);
     }
 
     @Override
@@ -229,13 +217,12 @@ public class GameScreen implements Screen {
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         renderer.render();
         mainClass.getBatch().begin();
 
         if (player != null) {
             player.handleInput(delta);
-//            mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
-            player.setAlpha(1f);
             player.draw(mainClass.getBatch());
         }
         for (HashMap.Entry<String, Opponent> entry : opponents.entrySet()) {
@@ -296,7 +283,6 @@ public class GameScreen implements Screen {
                 data.put("x", player.getX());
                 data.put("y", player.getY());
                 socket.emit("playerMove", data);
-                System.out.println("noob");
             }
             catch (JSONException e) {
                 System.out.println("[SocketIO] " + "Error sending positionposi");
@@ -307,7 +293,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://10.0.17.255:8000");
+            socket = IO.socket("http://localhost:8000");
             socket.connect();
         }
         catch (Exception e) {
