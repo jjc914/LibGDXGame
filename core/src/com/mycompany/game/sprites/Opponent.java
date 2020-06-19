@@ -15,13 +15,4 @@ public class Opponent extends Sprite {
         this.world = world;
         previousPosition = new Vector2(getX(), getY());
     }
-
-    public boolean hasMoved() {
-        if (previousPosition.x != getX() || previousPosition.y != getY()) {
-            previousPosition.x = getX();
-            previousPosition.y = getY();
-            return true;
-        }
-        return false;
-    }
 }
