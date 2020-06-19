@@ -62,6 +62,9 @@ public class GameScreen implements Screen {
     private OrthogonalTiledMapRenderer renderer; //renders the map
     private Box2DDebugRenderer box2DDebugRenderer;
 
+    private Texture playerTexture;
+    private Texture opponentTexture;
+
     private Socket socket;
 
     HashMap<String, Opponent> opponents;
