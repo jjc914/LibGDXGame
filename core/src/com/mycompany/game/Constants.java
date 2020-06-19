@@ -16,4 +16,5 @@ public class Constants {
     public static final String SPRITE_SHEET = "Tilemaps/tilesets/sprites.atlas";
     public static final String ANIM_STRING = "spriteAnimation";
     public static final String PLAYER_STRING = "SpriteSheet";
+    public static final String TEMP_SPRITE ="Tilemaps/tilesets/temp_sprite.jpg";
 }
