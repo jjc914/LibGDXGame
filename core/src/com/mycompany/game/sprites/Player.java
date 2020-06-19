@@ -129,7 +129,7 @@ public class Player extends Sprite {
 
     public void handleInput(float delta)  {
         float moveForce = 200f;
-        float jumpForce = 130;
+        float jumpForce = 180;
 
         // lock rotation
         playerBody.setFixedRotation(true);
@@ -164,22 +164,25 @@ public class Player extends Sprite {
 
         if (isTouchingLeft) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.LEFT))
+            setGrounded(true);
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
             {
-                Vector2 force = new Vector2(jumpForce, jumpForce);
-                playerBody.setLinearVelocity(force);
+                playerBody.setLinearVelocity(0,-4);
             }
         }
+
 
 
         if (isTouchingRight) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT ))
+            isGrounded = true;
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT ))
             {
-                Vector2 force = new Vector2(jumpForce, jumpForce);
-                playerBody.setLinearVelocity(force);
+                playerBody.setLinearVelocity(0,-4);
+                setGrounded(true);
             }
         }
+
 
         groundedBody.setTransform(playerBody.getPosition().x, playerBody.getPosition().y - 7.5f, 0f);
         rightBody.setTransform(playerBody.getPosition().x + 7.5f, playerBody.getPosition().y, 0f);
@@ -269,5 +272,6 @@ public class Player extends Sprite {
         //set to position of bottom left corner of box2dbody
         setPosition(playerBody.getPosition().x - getWidth() / 2, playerBody.getPosition().y - getHeight() / 2);
         setRegion(getFrame(deltaTime));
+        System.out.println(isGrounded);
     }
 }
