@@ -57,7 +57,7 @@ public class Player extends Sprite {
 
     public void definePlayerBox2d() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(50, 80);
+        bodyDef.position.set(50, 70);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         playerBody = world.createBody(bodyDef);
 
@@ -164,9 +164,9 @@ public class Player extends Sprite {
 
         if (isTouchingLeft) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.LEFT))
             {
-                Vector2 force = new Vector2(jumpForce/2f, jumpForce);
+                Vector2 force = new Vector2(jumpForce, jumpForce);
                 playerBody.setLinearVelocity(force);
             }
         }
@@ -174,9 +174,9 @@ public class Player extends Sprite {
 
         if (isTouchingRight) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && Gdx.input.isKeyPressed(Input.Keys.RIGHT ))
             {
-                Vector2 force = new Vector2(-(jumpForce/2f), jumpForce);
+                Vector2 force = new Vector2(jumpForce, jumpForce);
                 playerBody.setLinearVelocity(force);
             }
         }
