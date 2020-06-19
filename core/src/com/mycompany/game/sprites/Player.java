@@ -44,7 +44,6 @@ public class Player extends Sprite {
 
     public Player(Texture texture, World world, MainClass mainClass, GameScreen gameScreen)
     {
-        super(texture);
         this.world = world;
         this.mainClass = mainClass;
         this.gameScreen = gameScreen;

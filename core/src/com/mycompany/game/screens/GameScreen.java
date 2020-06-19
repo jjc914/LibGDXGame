@@ -33,6 +33,7 @@ import com.mycompany.game.MainClass;
 import com.mycompany.game.sprites.Opponent;
 import com.mycompany.game.sprites.Player;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,6 +67,8 @@ public class GameScreen implements Screen {
     private Texture playerTexture;
     private Texture opponentTexture;
 
+    private final float UPDATE_TIME = 1f/60f;
+    float timer;
     private Socket socket;
 
     HashMap<String, Opponent> opponents;
@@ -216,6 +219,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         update(delta);
+        updateServer(delta);
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -278,6 +282,21 @@ public class GameScreen implements Screen {
         return atlas;
     }
 
+    public void updateServer(float delta) {
+        timer += delta;
+        if (timer >= UPDATE_TIME && player != null) {
+            JSONObject data = new JSONObject();
+            try {
+                data.put("x", player.getX());
+                data.put("y", player.getY());
+                socket.emit("playerMoved", data);
+            }
+            catch (JSONException e) {
+                System.out.println("[SocketIO] " + "Error sending positionposi");
+            }
+        }
+    }
+
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
@@ -327,9 +346,44 @@ public class GameScreen implements Screen {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     String id = data.getString("id");
-                    System.out.println("[SocketIO] " + "New player connected with ID" + id);
+                    System.out.println("[SocketIO] " + "Player disconnected with ID" + id);
+                    opponents.remove(id);
                 } catch (JSONException e) {
-                    System.out.println("[SocketIO] " + "Error getting new player ID");
+                    System.out.println("[SocketIO] " + "Error getting disconnected player ID");
+                }
+            }
+        }).on("playerMoved", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    Double x = data.getDouble("x");
+                    Double y = data.getDouble("y");
+                    if (opponents.get(id) != null) {
+                        opponents.get(id).setPosition(x.floatValue(), y.floatValue());
+                    }
+                } catch (JSONException e) {
+                    System.out.println("[SocketIO] " + "Error getting disconnected player ID");
+                }
+            }
+        }).on("getPlayers", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONArray objects = (JSONArray) args[0];
+                try {
+                    for (int i =0; i <  objects.length(); i++) {
+                        Opponent opponent = new Opponent(opponentTexture, world);
+                        Vector2 position = new Vector2();
+                        position.x = ((Double) objects.getJSONObject(i).getDouble("x")).floatValue();
+                        position.y = ((Double) objects.getJSONObject(i).getDouble("y")).floatValue();
+                        opponent.setPosition(position.x, position.y);
+
+                        opponents.put(objects.getJSONObject(i).getString("id"), opponent);
+                    }
+                }
+                catch (JSONException e) {
+                    System.out.println("[SocketIO] " + "Error getting players");
                 }
             }
         });

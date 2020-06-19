@@ -17,6 +17,18 @@ io.on('connection', function(socket) {
     socket.emit('getPlayers', players);
     socket.broadcast.emit("newPlayer", { id: socket.id });
 
+    socket.on('playerMove', function(data) {
+        data.id = socket.id;
+        socket.broadcast.emit('playerMoved', data);
+
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].id == data.id) {
+                players[i].x == data.x;
+                players[i].y == data.y;
+            }
+        }
+    })
+
     socket.on('disconnect', function() {
         console.log("Player with id " + socket.id + " disconnected");
         socket.broadcast.emit('playerDisconnected', { id: socket.id });
@@ -27,10 +39,6 @@ io.on('connection', function(socket) {
         }
     })
     players.push(new player(socket.id, 0, 0))
-
-    socket.on('playerMove', function(data) {
-        socket.broadcast.emit("updatePlayer", { updateData: data })
-    })
 })
 
 function player (id, x, y) {

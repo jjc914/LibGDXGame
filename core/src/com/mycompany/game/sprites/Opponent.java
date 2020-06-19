@@ -11,6 +11,7 @@ public class Opponent extends Sprite {
     Vector2 previousPosition;
 
     public Opponent(Texture texture, World world) {
+        super(texture);
         this.world = world;
         previousPosition = new Vector2(getX(), getY());
     }
