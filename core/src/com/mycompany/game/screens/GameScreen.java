@@ -138,7 +138,7 @@ public class GameScreen implements Screen {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody) && player.isTouchingLeft && player.isTouchingRight);
                     {
                         player.setGrounded(true);
-                        System.out.println(player.isGrounded);
+//                        System.out.println(player.isGrounded);
                     }
                 }
 
@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody) && !player.isTouchingLeft && !player.isTouchingRight);
                     {
                         player.setGrounded(false);
-                        System.out.println(player.isGrounded);
+//                        System.out.println(player.isGrounded);
                     }
                 }
 
@@ -292,6 +292,7 @@ public class GameScreen implements Screen {
                 data.put("x", player.getX());
                 data.put("y", player.getY());
                 socket.emit("playerMoved", data);
+                System.out.println("noob");
             }
             catch (JSONException e) {
                 System.out.println("[SocketIO] " + "Error sending positionposi");
@@ -359,6 +360,7 @@ public class GameScreen implements Screen {
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
                 try {
+                    System.out.println("Player movelayer moved");
                     String id = data.getString("id");
                     Double x = data.getDouble("x");
                     Double y = data.getDouble("y");
