@@ -245,7 +245,7 @@ public class GameScreen implements Screen {
         mainClass.getBatch().setProjectionMatrix(camera.combined);
         renderer.render();
 
-        box2DDebugRenderer.render(world, camera.combined);
+//        box2DDebugRenderer.render(world, camera.combined);
     }
 
     @Override
