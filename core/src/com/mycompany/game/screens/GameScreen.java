@@ -229,6 +229,7 @@ public class GameScreen implements Screen {
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        renderer.render();
         mainClass.getBatch().begin();
 
         if (player != null) {
@@ -243,7 +244,6 @@ public class GameScreen implements Screen {
 
         mainClass.getBatch().end();
         mainClass.getBatch().setProjectionMatrix(camera.combined);
-        renderer.render();
 
 //        box2DDebugRenderer.render(world, camera.combined);
     }
