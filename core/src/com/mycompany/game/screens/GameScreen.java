@@ -75,11 +75,11 @@ public class GameScreen implements Screen {
         gameScreen = this;
 
         atlas = new TextureAtlas(Constants.SPRITE_SHEET);
-        playerTexture = new Texture(Gdx.files.internal(Constants.TEMP_SPRITE));
 
         Array<TextureAtlas.AtlasRegion> runningFrames = atlas.findRegions("SpriteSheet");
         runningAnimation = new Animation(1f/120f, runningFrames, Animation.PlayMode.LOOP);
-        System.out.println(runningAnimation.getKeyFrames().length);
+
+        opponentTexture = new Texture(Constants.TEMP_SPRITE);
 
         createCamera();
         createWorld();
@@ -224,7 +224,7 @@ public class GameScreen implements Screen {
         if (player != null) {
             player.handleInput(delta);
 //            mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
-            player.setAlpha(0f);
+            player.setAlpha(1f);
             player.draw(mainClass.getBatch());
         }
         for (HashMap.Entry<String, Opponent> entry : opponents.entrySet()) {
