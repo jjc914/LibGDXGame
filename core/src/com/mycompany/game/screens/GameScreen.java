@@ -72,6 +72,10 @@ public class GameScreen implements Screen {
 
         atlas = new TextureAtlas(Constants.SPRITE_SHEET);
 
+        Array<TextureAtlas.AtlasRegion> runningFrames = atlas.findRegions("SpriteSheet");
+        runningAnimation = new Animation(1f/120f, runningFrames, Animation.PlayMode.LOOP);
+        System.out.println(runningAnimation.getKeyFrames().length);
+
         createCamera();
         createWorld();
         createCollisionListener();
@@ -192,6 +196,13 @@ public class GameScreen implements Screen {
         });
     }
 
+    public void createPlayer() {
+        player = new Player(world, mainClass, this);
+        System.out.println("worl");
+//        TextureAtlas atlas = new TextureAtlas(Constants.SPRITE_SHEET);
+
+    }
+
     @Override
     public void show() {
 
@@ -205,10 +216,14 @@ public class GameScreen implements Screen {
             mainClass.getBatch().begin();
             player.handleInput(delta);
             mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
+            player.draw(mainClass.getBatch());
+
             mainClass.getBatch().end();
         }
 //        for (HashMap.Entry<String, Player> entry : friendlyopponents.entrySet()) {
-//            entry.getValue().draw(mainClass.getBatch());
+//            entry.getValue().g
+
+//            (mainClass.getBatch());
 //        }
 
         Gdx.gl.glClearColor(0, 0 , 0 ,1);
@@ -255,13 +270,8 @@ public class GameScreen implements Screen {
         renderer.setView(camera);
     }
 
-    public void createPlayer() {
-        player = new Player(world, mainClass, this);
-        System.out.println("worl");
-//        TextureAtlas atlas = new TextureAtlas(Constants.SPRITE_SHEET);
-
-        Array<TextureAtlas.AtlasRegion> runningFrames = atlas.findRegions("spriteAnimation");
-        runningAnimation = new Animation(1f/120f, runningFrames, Animation.PlayMode.LOOP);
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 
     public void connectSocket() {

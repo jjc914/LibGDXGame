@@ -36,13 +36,22 @@ public class Player extends Sprite {
     public TextureRegion currentFrame;
     private float elapsed_time = 0f;
 
+    //states
+    public enum State {STANDING};
+    public State currentState;
+    private boolean runningToRight;
+
     public Player(World world, MainClass mainClass, GameScreen gameScreen)
     {
         this.world = world;
         this.mainClass = mainClass;
         this.gameScreen = gameScreen;
+        currentFrame = new TextureRegion(gameScreen.getAtlas().findRegion(Constants.PLAYER_STRING), 0, 0, 16, 16);
 
         definePlayerBox2d();
+
+        setBounds(0, 0, 16, 16);
+        setRegion(currentFrame);
     }
 
     public void definePlayerBox2d() {
@@ -168,9 +177,45 @@ public class Player extends Sprite {
 
     public TextureRegion handleAnimations(float delta) {
         elapsed_time += Gdx.graphics.getDeltaTime();
-        currentFrame = (TextureRegion) gameScreen.runningAnimation.getKeyFrame(elapsed_time);
+//        currentFrame = (TextureRegion) gameScreen.runningAnimation.getKeyFrame(elapsed_time);
+//        currentFrame = new TextureRegion(gameScreen.getAtlas().findRegion(Constants.PLAYER_STRING), 0, 0, 16, 16);
 
         return currentFrame;
+    }
+
+    private State getState()  {
+        return State.STANDING;
+    }
+
+    //returns appropriate frame needed to display as sprite's texture region
+    private TextureRegion getFrame(float deltaT)
+    {
+        currentState = getState();
+        TextureRegion region;
+        switch(currentState)
+        {
+            //no breaks for next 2 cases because the following code applies to all 3 cases
+            case STANDING:
+                //no break needed here because STANDING and 'default' will do the same thing.
+            default:
+                region = currentFrame;
+                break;
+        }
+
+        //region.isFlipX() = true if texture is flipped i.e. Player running to left
+        //if Player is standing facing right, flip them and run to left
+        if((playerBody.getLinearVelocity().x < 0 || !runningToRight) && !region.isFlipX())
+        {
+            region.flip(true, false);
+            runningToRight = false;
+        }
+        //if Player is standing facing left, flip them and run to right
+        else if((playerBody.getLinearVelocity().x > 0 || runningToRight) && region.isFlipX())
+        {
+            region.flip(true, false);
+            runningToRight = true;
+        }
+        return region;
     }
 
     public void setGrounded(boolean isGrounded) {
@@ -209,6 +254,8 @@ public class Player extends Sprite {
 
     public void update(float deltaTime)
     {
-
+        //set to position of bottom left corner of box2dbody
+        setPosition(playerBody.getPosition().x - getWidth() / 2, playerBody.getPosition().y - getHeight() / 2);
+        setRegion(getFrame(deltaTime));
     }
 }
