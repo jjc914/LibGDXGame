@@ -217,20 +217,21 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         update(delta);
 
+        Gdx.gl.glClearColor(0, 0 , 0 ,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        mainClass.getBatch().begin();
+
         if (player != null) {
-            mainClass.getBatch().begin();
             player.handleInput(delta);
 //            mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
+            player.setAlpha(0f);
             player.draw(mainClass.getBatch());
-
-            mainClass.getBatch().end();
         }
         for (HashMap.Entry<String, Opponent> entry : opponents.entrySet()) {
             entry.getValue().draw(mainClass.getBatch());
         }
 
-        Gdx.gl.glClearColor(0, 0 , 0 ,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        mainClass.getBatch().end();
         mainClass.getBatch().setProjectionMatrix(camera.combined);
         renderer.render();
 
