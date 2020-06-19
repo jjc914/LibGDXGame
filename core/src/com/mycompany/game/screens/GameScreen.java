@@ -75,6 +75,7 @@ public class GameScreen implements Screen {
         gameScreen = this;
 
         atlas = new TextureAtlas(Constants.SPRITE_SHEET);
+        playerTexture = new Texture(Gdx.files.internal(Constants.TEMP_SPRITE));
 
         Array<TextureAtlas.AtlasRegion> runningFrames = atlas.findRegions("SpriteSheet");
         runningAnimation = new Animation(1f/120f, runningFrames, Animation.PlayMode.LOOP);
@@ -219,7 +220,7 @@ public class GameScreen implements Screen {
         if (player != null) {
             mainClass.getBatch().begin();
             player.handleInput(delta);
-            mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
+//            mainClass.getBatch().draw(player.handleAnimations(delta), 0, 0);
             player.draw(mainClass.getBatch());
 
             mainClass.getBatch().end();
@@ -279,7 +280,7 @@ public class GameScreen implements Screen {
     public void connectSocket() {
         System.out.println("[SocketIO] Connecting...");
         try {
-            socket = IO.socket("http://10.0.18.61:8000");
+            socket = IO.socket("http://localhost:8000");
             socket.connect();
         }
         catch (Exception e) {

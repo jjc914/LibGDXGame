@@ -2,6 +2,7 @@ package com.mycompany.game.sprites;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -41,8 +42,9 @@ public class Player extends Sprite {
     public State currentState;
     private boolean runningToRight;
 
-    public Player(World world, MainClass mainClass, GameScreen gameScreen)
+    public Player(Texture texture, World world, MainClass mainClass, GameScreen gameScreen)
     {
+        super(texture);
         this.world = world;
         this.mainClass = mainClass;
         this.gameScreen = gameScreen;
