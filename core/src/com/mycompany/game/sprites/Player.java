@@ -57,7 +57,7 @@ public class Player extends Sprite {
 
     public void definePlayerBox2d() {
         BodyDef bodyDef = new BodyDef();
-        bodyDef.position.set(50, 80);
+        bodyDef.position.set(50, 70);
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         playerBody = world.createBody(bodyDef);
 
