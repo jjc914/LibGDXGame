@@ -119,7 +119,7 @@ public class Player extends Sprite {
 
     public void handleInput(float delta)  {
         float moveForce = 200f;
-        float jumpForce = 180;
+        float jumpForce = 180f;
 
         // lock rotation
         playerBody.setFixedRotation(true);
@@ -130,6 +130,7 @@ public class Player extends Sprite {
             Vector2 force = new Vector2(moveForce, playerBody.getLinearVelocity().y);
             playerBody.setLinearVelocity(force);
         }
+
         else if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
         {
             Vector2 force = new Vector2(-moveForce, playerBody.getLinearVelocity().y);
@@ -143,7 +144,7 @@ public class Player extends Sprite {
         // jumping
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && isGrounded)
         {
-            Vector2 force = new Vector2(jumpForce/2, jumpForce);
+            Vector2 force = new Vector2(playerBody.getLinearVelocity().x, jumpForce);
             playerBody.setLinearVelocity(force);
         }
 
@@ -154,23 +155,12 @@ public class Player extends Sprite {
 
         if (isTouchingLeft) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x < 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-//            setGrounded(true);
-//            if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-//            {
-//                playerBody.setLinearVelocity(0,-4);
-//            }
         }
 
 
 
         if (isTouchingRight) {
             playerBody.setLinearVelocity(playerBody.getLinearVelocity().x > 0 ? 0 : playerBody.getLinearVelocity().x, playerBody.getLinearVelocity().y+4f);
-//            isGrounded = true;
-//            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT ))
-//            {
-//                playerBody.setLinearVelocity(0,-4);
-//                setGrounded(true);
-//            }
         }
 
 

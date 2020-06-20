@@ -130,7 +130,6 @@ public class GameScreen implements Screen {
                 if (bodyA.getUserData() == player.rightBody || bodyB.getUserData() == player.rightBody) {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody)) {
                         player.setRightCollision(true);
-                        player.setGrounded(true);
                     }
                 }
 
@@ -138,7 +137,6 @@ public class GameScreen implements Screen {
                 if (bodyA.getUserData() == player.leftBody || bodyB.getUserData() == player.leftBody) {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody)) {
                         player.setLeftCollision(true);
-                        player.setGrounded(true);
                     }
                 }
             }
@@ -154,7 +152,6 @@ public class GameScreen implements Screen {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody));
                     {
                         player.setGrounded(false);
-//                        System.out.println(player.isGrounded);
                     }
                 }
 
@@ -164,7 +161,6 @@ public class GameScreen implements Screen {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
                         player.setRightCollision(false);
-                        player.setGrounded(false);
                     }
                 }
 
@@ -174,7 +170,6 @@ public class GameScreen implements Screen {
                     if (!(bodyA.getUserData() == player.playerBody || bodyB.getUserData() == player.playerBody))
                     {
                         player.setLeftCollision(false);
-                        player.setGrounded(false);
                     }
                 }
             }
